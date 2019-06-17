@@ -1,13 +1,17 @@
 import React from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import params from '../params'
+import Mine from './Mine'
+import Flag from './Flag'
 
 export default props => {
-    const { mined, opened, nearMines } = props
+    const { mined, opened, nearMines, exploded, flagged } = props
 
     const StyleField = [styles.field]
     if (opened) StyleField.push(styles.opened)
-    if (StyleField.length === 1) StyleField.push(styles.regular)
+    if (exploded) StyleField.push(styles.exploded)
+    if (flagged) StyleField.push(styles.flagged)
+    if (!opened && !exploded) StyleField.push(styles.regular)
 
     let color = null
     if (nearMines > 0) {
@@ -23,6 +27,8 @@ export default props => {
             {!mined && opened && nearMines > 0 ?
                 <Text style={[styles.label, { color: color }]}>
                     {nearMines}</Text> : false}
+            {mined && opened ? <Mine />: false}
+            {flagged && !opened ? <Flag />: false}
         </View>
     )
 
@@ -50,6 +56,10 @@ const styles = StyleSheet.create({
     label: {
         fontWeight: 'bold',
         fontSize: params.fontSize,
-    }
+    },
+    exploded: {
+        backgroundColor: 'red',
+        borderColor: 'red',
+    },
 }
 )
